@@ -3,14 +3,15 @@
 var Player = { "x":0, "y":0, "hp":100, "level":1, "xp":0, "ax":0, "ay":8, "w":32, "h":32, "name":"Jan" };
 var Resolution = { "x":0, "y":0, "w":480, "h":320, "tw":32, "th":32 };
 
-var World = [[0, 0, 0, 0, 1, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 1, 1, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 1, 0, 0, 0, 0]];
-var Resources =[{"x":20, "y":12, "width":32, "height":32}, {"x":8, "y":119, "width":32, "height":32}];
+var World = [[0, 0, 0, 0, 2, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 1, 2, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0], [0, 0, 2, 0, 1, 0, 0, 0, 0]];
+var Resources =[{"x":12, "y":7, "width":32, "height":32}, {"x":19, "y":7, "width":32, "height":32}, {"x":17, "y":10, "width":32, "height":32}];
 
 var start = new Date();
 
 function drawWorld(timestamp)
 {
-	var progress = timestamp - start;
+	//var progress = timestamp - start;
+	//start = new Date();
 	
 	//var canvas = document.getElementById('canvas');
 	var context = canvas.getContext('2d');
@@ -74,18 +75,30 @@ function bindEvents()
 		{
 			case 38: {
 				Player.y--;
+				Player.ay = 7;
+				Player.ax++;
+				Player.ax %= 4;
 				break;
 			}
 			case 40: {
 				Player.y++;
+				Player.ay = 10;
+				Player.ax++;
+				Player.ax %= 4;
 				break;
 			}
 			case 37: {
 				Player.x--;
+				Player.ay = 1;
+				Player.ax++;
+				Player.ax %= 4;
 				break;
 			}
 			case 39: {
 				Player.x++;
+				Player.ay = 4;
+				Player.ax++;
+				Player.ax %= 4;
 				break;
 			}
 			default: {
@@ -112,22 +125,11 @@ function startMenu()
 	
 }
 
-function onToggleIngameMenu()
-{
-	if($('#ingameMenu').css('left') == '1880px')
-	{
-		$('#ingameMenu').css('left','1620px');
-	}
-	else
-	{
-		$('#ingameMenu').css('left','1880px');
-	}
-}
-
 function saveGame(playerName)
 {
 	if(localStorage)
 	{
+		if(typeof playerName != 'string') playerName = Player.name;
 		localStorage.setItem(playerName, JSON.stringify(Player));
 	}
 	else
@@ -140,6 +142,7 @@ function loadGame(playerName)
 {
 	if(localStorage)
 	{
+		if(typeof playerName != 'string') playerName = Player.name;
 		if(localStorage.getItem(playerName))
 		{
 			Player = JSON.parse(localStorage.getItem(playerName));
