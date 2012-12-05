@@ -3,20 +3,24 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>Gaym</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
     <link rel="stylesheet" type="text/css" href="Styles.css"  />
-    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
     <script src="Library.js"></script>
 </head>
 <body>
-	<canvas id="canvas">
-    </canvas>
-    <img id="tilemap" src="tilemap.png" />
-    <img id="player" src="player1.png" />
-    <img id="king" src="king.png" />
-    <img id="girl" src="girl.png" />
-    
-    <script defer="defer">
-		startGame();
-	</script>
+    <div data-role="page" id="GameScreen">
+        <canvas id="canvas">
+        </canvas>
+        <img id="tilemap" src="tilemap.png" />
+        <img id="player" src="player1.png" />
+        <img id="king" src="king.png" />
+        <img id="girl" src="girl.png" />
+        
+        <script defer="defer">
+            startGame();
+        </script>
+    </div>
 </body>
 </html>
