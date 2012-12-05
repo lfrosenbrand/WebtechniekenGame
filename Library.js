@@ -1,6 +1,6 @@
 // JavaScript Document
 
-var Player = { "x":0, "y":0, "hp":100, "level":1, "xp":0, "ax":0, "ay":8, "w":32, "h":32 };
+var Player = { "x":0, "y":0, "hp":100, "level":1, "xp":0, "ax":0, "ay":8, "w":32, "h":32, "name":"Jan" };
 var Resolution = { "x":0, "y":0, "w":480, "h":320, "tw":32, "th":32 };
 
 var World = [[0, 0, 0, 0, 1, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 1, 1, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0], [0, 0, 1, 0, 1, 0, 0, 0, 0]];
@@ -12,7 +12,7 @@ function drawWorld(timestamp)
 {
 	var progress = timestamp - start;
 	
-	var canvas = document.getElementById('canvas');
+	//var canvas = document.getElementById('canvas');
 	var context = canvas.getContext('2d');
 	//console.log('drawing scene');
 	context.clearRect (Resolution.x , Resolution.y , Resolution.w , Resolution.h);
@@ -101,6 +101,57 @@ function bindEvents()
 
 function startGame()
 {
+	Player.name = playerName.value;
+	loadGame(Player.name);
 	bindEvents();
 	startDrawing();	
+}
+
+function startMenu()
+{
+	
+}
+
+function onToggleIngameMenu()
+{
+	if($('#ingameMenu').css('left') == '1880px')
+	{
+		$('#ingameMenu').css('left','1620px');
+	}
+	else
+	{
+		$('#ingameMenu').css('left','1880px');
+	}
+}
+
+function saveGame(playerName)
+{
+	if(localStorage)
+	{
+		localStorage.setItem(playerName, JSON.stringify(Player));
+	}
+	else
+	{
+		alert('unable to save game');
+	}
+}
+
+function loadGame(playerName)
+{
+	if(localStorage)
+	{
+		if(localStorage.getItem(playerName))
+		{
+			Player = JSON.parse(localStorage.getItem(playerName));
+			console.log(Player);
+		}
+		else
+		{
+			console.log('no savegame for: "' + playerName +'"');
+		}
+	}
+	else
+	{
+		alert('unable to save game');
+	}
 }
