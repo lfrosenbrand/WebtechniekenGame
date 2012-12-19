@@ -5,27 +5,32 @@
     <title>Gaym</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+    <link rel="stylesheet" href="http://www.jacklmoore.com/colorbox/example1/colorbox.css" />
     <style>
 		canvas { width: 100%; height: 100%; /*width:480px; height:320px;*/ }
 		img { display:none; }
 		input[type="text"] { text-align:center; }
 		
 		#GameScreen .ui-content { padding:0px; }
-		#ingameMenu { position:fixed; z-index: 99; width:300px; height: 48px; left: 1880px; top: 0px;  background:#000000 url('settings.png') no-repeat 5px center; border-bottom-left-radius: 0.6em; opacity: 0.5;
-		transition: left 0.7s, opacity 0.3s; -moz-transition: left 0.7s, opacity 0.3s; -webkit-transition: left 0.7s, opacity 0.3s; -o-transition: left 0.7s, opacity 0.3s; }
+		#ingameMenu { position:fixed; z-index: 99; width:300px; height: 48px; right: -255px; top: 0px;  background:#000000 url('settings.png') no-repeat 5px center; border-bottom-left-radius: 0.6em; opacity: 0.5;
+		transition: right 0.7s, opacity 0.3s; -moz-transition: right 0.7s, opacity 0.3s; -webkit-transition: right 0.7s, opacity 0.3s; -o-transition: right 0.7s, opacity 0.3s; }
 		#ingameMenu:hover, #ingameMenu.slideOut { opacity:1.0; }
-		#ingameMenu.slideOut { left:1620px; }
+		#ingameMenu.slideOut { right: 0px; }
 		#ingameMenu div { float: right; width:32px; height:32px; background:#4D4D4D no-repeat center center; border: solid 1px #666; box-shadow: #999 2px 2px 2px; margin:3px 6px; padding:3px; border-radius:0.4em; }
 		#ingameMenu div:hover { background-color:#A0A0A0; }
 		#ingameMenu div.showSettings { background-image:url('settings.png'); }
+		#ingameMenu div.showAbout{ background-image:url('question.png'); }
 		#ingameMenu div.loadGame { background-image:url('load.png'); }
 		#ingameMenu div.saveGame { background-image:url('save.png'); }
+		
+		div#cboxOverlay { background: rgba(0, 0, 0, 0.6) none; opacity:0.5; }
 	</style>
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+    <script src="http://www.jacklmoore.com/colorbox/colorbox/jquery.colorbox.js" async="async" ></script>
     <script src="Library.js"></script>
 </head>
-<body>
+<body>        
 	<div data-role="page" id="MenuScreen">
         <div data-role="header">
         	<h1>The Game</h1>
@@ -50,10 +55,20 @@
         </div>
         <div id="ingameMenu" onclick="$(this).toggleClass('slideOut');">
         	<div onclick="showSettings();" class="showSettings"></div>
+            <div onclick="showAbout();" class="showAbout"></div>
             <div onclick="loadGame();" class="loadGame"></div>
             <div onclick="saveGame();" class="saveGame"></div>
         </div>
     </div>
+    
+    <div id="dialog-about" title="About">
+        <p>Adding the modal overlay screen makes the dialog look more prominent because it dims out the page content.</p>
+    </div>
+
+    <div id="dialog-settings" title="Settings">
+        <p>Adding the modal overlay screen makes the dialog look more prominent because it dims out the page content.</p>
+    </div>
+    
     <script defer="defer">
 		startMenu();
 	</script>

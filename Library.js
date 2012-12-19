@@ -3,8 +3,8 @@
 var Player = { "x":0, "y":0, "hp":100, "level":1, "xp":0, "ax":0, "ay":8, "w":32, "h":32, "name":"Jan" };
 var Resolution = { "x":0, "y":0, "w":480, "h":320, "tw":32, "th":32 };
 
-var World = [[0, 0, 0, 0, 2, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 1, 2, 0, 0, 0, 0], [0, 0, 1, 0, 0, 0, 0, 0, 0], [0, 0, 2, 0, 1, 0, 0, 0, 0]];
-var Resources =[{"x":12, "y":7, "width":32, "height":32}, {"x":19, "y":7, "width":32, "height":32}, {"x":17, "y":10, "width":32, "height":32}];
+var World = [[0, 0, 0, 0, 2, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 1, 2, 0, 0, 0, 0], [0, 0, 1, 0, 0, 3, 0, 0, 0], [0, 0, 2, 0, 1, 0, 0, 0, 0]];
+var Resources =[{"x":12, "y":7, "width":32, "height":32}, {"x":19, "y":7, "width":32, "height":32}, {"x":17, "y":10, "width":32, "height":32}, { "name":"king", "ax":0, "ay":0, "w":32, "h":32 }];
 
 var start = new Date();
 
@@ -28,8 +28,16 @@ function drawWorld(timestamp)
 			xi = (xi < 0 ? (row.length + xi) : (xi % row.length));
 			var v = row[xi];
 			var r = Resources[v];
-			//console.log(img, (r.x * Resolution.tw), (r.y * Resolution.th), r.width, r.height, (x * Resolution.tw), (y * Resolution.th), r.width, r.height);
-			context.drawImage(tilemap, (r.x * Resolution.tw), (r.y * Resolution.th), r.width, r.height, (x * Resolution.tw), (y * Resolution.th), r.width, r.height);
+			if(r.name)
+			{
+				context.drawImage(document.getElementById(r.name), (r.ax * Resolution.tw), (r.ay * Resolution.th), r.w, r.h, (x * Resolution.tw), (y * Resolution.th), r.w, r.h);
+				r.ax = (r.ax == 1 ? 0 : 1);
+			}
+			else
+			{
+				//console.log(img, (r.x * Resolution.tw), (r.y * Resolution.th), r.width, r.height, (x * Resolution.tw), (y * Resolution.th), r.width, r.height);
+				context.drawImage(tilemap, (r.x * Resolution.tw), (r.y * Resolution.th), r.width, r.height, (x * Resolution.tw), (y * Resolution.th), r.width, r.height);
+			}
 		}
 	}
 	context.drawImage(player, (Player.ax * Resolution.tw), (Player.ay * Resolution.th), Player.w, Player.h, (Resolution.w *0.25), 50, Resolution.tw, Resolution.th );
@@ -115,6 +123,7 @@ function bindEvents()
 function startGame()
 {
 	Player.name = playerName.value;
+	localStorage.currentPlayerName = Player.name;
 	loadGame(Player.name);
 	bindEvents();
 	startDrawing();	
@@ -122,7 +131,20 @@ function startGame()
 
 function startMenu()
 {
-	
+	if(localStorage.currentPlayerName != undefined && localStorage.currentPlayerName != null)
+	{
+		playerName.value = localStorage.currentPlayerName;
+	}
+	var url = window.location.href;
+	var idx = url.indexOf('#');
+	if(idx > 0)
+	{
+		var qs = url.slice(idx);
+		if(qs.indexOf('GameScreen') > 0)
+		{
+			startGame();
+		}
+	}
 }
 
 function saveGame(playerName)
@@ -157,4 +179,14 @@ function loadGame(playerName)
 	{
 		alert('unable to save game');
 	}
+}
+
+function showAbout()
+{
+	$.colorbox({inline:true, href:"#dialog-about"});
+}
+
+function showSettings()
+{
+	$.colorbox({inline:true, href:"#dialog-settings"});
 }
