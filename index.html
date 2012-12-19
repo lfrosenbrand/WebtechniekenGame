@@ -23,7 +23,7 @@
 		#ingameMenu div.loadGame { background-image:url('load.png'); }
 		#ingameMenu div.saveGame { background-image:url('save.png'); }
 		
-		div#cboxOverlay { background: rgba(0, 0, 0, 0.6) none; opacity:0.5; }
+		div#cboxOverlay { background: rgba(0, 0, 0, 0.6) none; }
 	</style>
 	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
@@ -72,5 +72,9 @@
     <script defer="defer">
 		startMenu();
 	</script>
+    
+    <audio id="kingSpeech" style="display: none;">
+    	<source src="http://www.audiomicro.com/tracks/listen/5a1c0a192aa643f" type="audio/mp3" />
+    </audio>
 </body>
 </html>

@@ -7,6 +7,7 @@ var World = [[0, 0, 0, 0, 2, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0,
 var Resources =[{"x":12, "y":7, "width":32, "height":32}, {"x":19, "y":7, "width":32, "height":32}, {"x":17, "y":10, "width":32, "height":32}, { "name":"king", "ax":0, "ay":0, "w":32, "h":32 }];
 
 var start = new Date();
+var playedThaSound = false;
 
 function drawWorld(timestamp)
 {
@@ -32,6 +33,14 @@ function drawWorld(timestamp)
 			{
 				context.drawImage(document.getElementById(r.name), (r.ax * Resolution.tw), (r.ay * Resolution.th), r.w, r.h, (x * Resolution.tw), (y * Resolution.th), r.w, r.h);
 				r.ax = (r.ax == 1 ? 0 : 1);
+				if(x == 4 && y == 2)
+				{
+					if(!playedThaSound)
+					{
+						kingSpeech.play();
+						playedThaSound = true;
+					}
+				}
 			}
 			else
 			{
@@ -117,6 +126,7 @@ function bindEvents()
 		Player.y = yi;
 		var xi = (Player.x < 0 ? (World[0].length + Player.x) : (Player.x % World[0].length));
 		Player.x = xi;
+		playedThaSound = false;
 	};
 }
 
