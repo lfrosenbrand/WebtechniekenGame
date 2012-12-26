@@ -1,13 +1,25 @@
 // JavaScript Document
 
-var Player = { "x":0, "y":0, "hp":100, "level":1, "xp":0, "ax":0, "ay":8, "w":32, "h":32, "name":"Jan" };
+var Player = { "x":0, "y":0, "hp":100, "level":1, "xp":0, "ax":0, "ay":8, "w":32, "h":32, "name":"Jan", inventory:[], "moved":true };
 var Resolution = { "x":0, "y":0, "w":480, "h":320, "tw":32, "th":32 };
 
-var World = [[0, 0, 0, 0, 2, 0, 0, 0, 0], [0, 0, 0, 1, 0, 0, 0, 0, 0], [0, 0, 0, 1, 2, 0, 0, 0, 0], [0, 0, 1, 0, 0, 3, 0, 0, 0], [0, 0, 2, 0, 1, 0, 0, 0, 0]];
-var Resources =[{"x":12, "y":7, "width":32, "height":32}, {"x":19, "y":7, "width":32, "height":32}, {"x":17, "y":10, "width":32, "height":32}, { "name":"king", "ax":0, "ay":0, "w":32, "h":32 }];
+var Quests = [ { "name":"Save Christmas!", "type":"collect", "item_id":4, "count":3, "started":false, "completed":false, "description":"Ohnoez! We dun lost teh orebs! Plx gief dem to da king!", "hint":"U dun haf enuf orbs, plx get moar!" } ];
 
+var World = [ [0, 0, 0, 0, 2, 0, 4, 0, 0]
+			, [0, 0, 0, 1, 0, 0, 4, 0, 0]
+			, [0, 0, 0, 1, 2, 0, 0, 0, 0]
+			, [0, 0, 1, 0, 0, 3, 0, 0, 0]
+			, [0, 0, 2, 0, 1, 0, 0, 4, 0]
+			];
+			
+var Resources =[  {"x":12, "y":7, "width":32, "height":32}			//Grass
+				, {"x":19, "y":7, "width":32, "height":32}			//Rock
+				, {"x":17, "y":10, "width":32, "height":32}			//Flower
+				, { "name":"king", "ax":0, "ay":0, "w":32, "h":32 }	//King
+				, {"x":17, "y":10, "width":32, "height":32}			//Orb
+			];
+			
 var start = new Date();
-var playedThaSound = false;
 
 function drawWorld(timestamp)
 {
@@ -35,10 +47,27 @@ function drawWorld(timestamp)
 				r.ax = (r.ax == 1 ? 0 : 1);
 				if(x == 4 && y == 2)
 				{
-					if(!playedThaSound)
+					if(Player.moved)
 					{
-						kingSpeech.play();
-						playedThaSound = true;
+						var quest = Quests[0];
+						if(quest.completed || (Player.inventory[quest.item_id] == quest.count))
+						{
+							quest.completed = true;
+							Player.inventory[quest.item_id] = null;
+							kingSpeech.play();
+						}
+						else
+						{
+							if(quest.started)
+							{
+								alert(quest.hint);
+							}
+							else
+							{
+								alert(quest.description);
+								quest.started = true;
+							}
+						}
 					}
 				}
 			}
@@ -50,7 +79,8 @@ function drawWorld(timestamp)
 		}
 	}
 	context.drawImage(player, (Player.ax * Resolution.tw), (Player.ay * Resolution.th), Player.w, Player.h, (Resolution.w *0.25), 50, Resolution.tw, Resolution.th );
-	requestAnimationFrame(drawWorld);
+	
+	Player.moved = false;
 }
 
 function doLogic()
@@ -80,6 +110,7 @@ function startDrawing()
 	console.log('starting AI');
 	window.setInterval(function() {
 		doLogic();
+		requestAnimationFrame(drawWorld);
 	}, 1000/30);
 }
 
@@ -126,7 +157,7 @@ function bindEvents()
 		Player.y = yi;
 		var xi = (Player.x < 0 ? (World[0].length + Player.x) : (Player.x % World[0].length));
 		Player.x = xi;
-		playedThaSound = false;
+		Player.moved = true;
 	};
 }
 
