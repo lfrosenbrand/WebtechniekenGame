@@ -3,20 +3,19 @@
 var Player = { "x":0, "y":0, "hp":100, "level":1, "xp":0, "ax":0, "ay":8, "w":32, "h":32, "name":"Jan", inventory:[], "moved":true };
 var Resolution = { "x":0, "y":0, "w":480, "h":320, "tw":32, "th":32 };
 
-var Quests = [ { "name":"Save Christmas!", "type":"collect", "item_id":4, "count":3, "started":false, "completed":false, "description":"Ohnoez! We dun lost teh orebs! Plx gief dem to da king!", "hint":"U dun haf enuf orbs, plx get moar!" } ];
+var Quests = [ { "name":"Flowah Powah!", "type":"collect", "item_id":1, "count":4, "isStarted":false, "isCompleted":false, "description":"Ohnoez! We dun lost teh flowahs! Plx gief dem bak to da king!", "hint":"U dun haf enuf flowahs, plx get moar!", "complete":"ktnxbai" } ];
 
-var World = [ [0, 0, 0, 0, 2, 0, 4, 0, 0]
-			, [0, 0, 0, 1, 0, 0, 4, 0, 0]
+var World = [ [0, 0, 0, 0, 2, 0, 0, 0, 0]
+			, [0, 0, 0, 1, 0, 0, 0, 0, 0]
 			, [0, 0, 0, 1, 2, 0, 0, 0, 0]
 			, [0, 0, 1, 0, 0, 3, 0, 0, 0]
-			, [0, 0, 2, 0, 1, 0, 0, 4, 0]
+			, [0, 0, 2, 0, 1, 0, 0, 0, 0]
 			];
 			
 var Resources =[  {"x":12, "y":7, "width":32, "height":32}			//Grass
-				, {"x":19, "y":7, "width":32, "height":32}			//Rock
-				, {"x":17, "y":10, "width":32, "height":32}			//Flower
+				, {"x":19, "y":7, "width":32, "height":32}			//Flower
+				, {"x":17, "y":10, "width":32, "height":32}			//Rock
 				, { "name":"king", "ax":0, "ay":0, "w":32, "h":32 }	//King
-				, {"x":17, "y":10, "width":32, "height":32}			//Orb
 			];
 			
 var start = new Date();
@@ -50,22 +49,28 @@ function drawWorld(timestamp)
 					if(Player.moved)
 					{
 						var quest = Quests[0];
-						if(quest.completed || (Player.inventory[quest.item_id] == quest.count))
+						if(quest.isCompleted || (Player.inventory[quest.item_id] >= quest.count))
 						{
-							quest.completed = true;
+							quest.isCompleted = true;
 							Player.inventory[quest.item_id] = null;
+							
+							$('#dialog-alert .text').html(quest.complete);
+							$.colorbox({inline:true, href:"#dialog-alert"});
+							
 							kingSpeech.play();
 						}
 						else
 						{
-							if(quest.started)
+							if(quest.isStarted)
 							{
-								alert(quest.hint);
+								$('#dialog-alert .text').html(quest.hint);
+								$.colorbox({inline:true, href:"#dialog-alert"});
 							}
 							else
 							{
-								alert(quest.description);
-								quest.started = true;
+								$('#dialog-alert .text').html(quest.description);
+								$.colorbox({inline:true, href:"#dialog-alert"});
+								quest.isStarted = true;
 							}
 						}
 					}
@@ -75,6 +80,21 @@ function drawWorld(timestamp)
 			{
 				//console.log(img, (r.x * Resolution.tw), (r.y * Resolution.th), r.width, r.height, (x * Resolution.tw), (y * Resolution.th), r.width, r.height);
 				context.drawImage(tilemap, (r.x * Resolution.tw), (r.y * Resolution.th), r.width, r.height, (x * Resolution.tw), (y * Resolution.th), r.width, r.height);
+				var quest = Quests[0];
+				if(quest.isStarted)
+				{
+					if(x == 4 && y == 2 && v == quest.item_id)
+					{
+						var count = Player.inventory[v];
+						if(count == null || count == undefined)
+						{
+							count = 0;
+						}
+						Player.inventory[v] = (count + 1);
+						pickFlower.play();
+						row[xi] = 0;
+					}
+				}
 			}
 		}
 	}
@@ -110,7 +130,10 @@ function startDrawing()
 	console.log('starting AI');
 	window.setInterval(function() {
 		doLogic();
-		requestAnimationFrame(drawWorld);
+		if(Player.moved)
+		{
+			requestAnimationFrame(drawWorld);
+		}
 	}, 1000/30);
 }
 
@@ -150,13 +173,62 @@ function bindEvents()
 				break;
 			}
 			default: {
-				break;
+				return;
 			}
 		}
 		var yi = (Player.y < 0 ? (World.length + Player.y) : (Player.y % World.length));
 		Player.y = yi;
 		var xi = (Player.x < 0 ? (World[0].length + Player.x) : (Player.x % World[0].length));
 		Player.x = xi;
+		walking.play();
+		Player.moved = true;
+	};
+	
+	window.onmousedown=function(e){
+	
+		if(e.touches)
+		{
+			e = e.touches[0];
+		}
+		console.log(e.y, (screen.availHeight * 0.2), (screen.availHeight * 0.8));
+		console.log(e.x, (screen.availWidth * 0.2), (screen.availWidth * 0.8));
+		if(e.y < (screen.availHeight * 0.2)) {
+			Player.y--;
+			Player.ay = 7;
+			Player.ax++;
+			Player.ax %= 4;
+			console.log("up");
+		}
+		else if(e.y > (screen.availHeight * 0.8)) {
+			Player.y++;
+			Player.ay = 10;
+			Player.ax++;
+			Player.ax %= 4;
+			console.log("down");
+		}
+		else if(e.x < (screen.availWidth * 0.2)) {
+			Player.x--;
+			Player.ay = 1;
+			Player.ax++;
+			Player.ax %= 4;
+			console.log("left");
+		}
+		else if(e.x > (screen.availWidth * 0.8)) {
+			Player.x++;
+			Player.ay = 4;
+			Player.ax++;
+			Player.ax %= 4;
+			console.log("right");
+		}
+		else {
+			return;
+		}
+		
+		var yi = (Player.y < 0 ? (World.length + Player.y) : (Player.y % World.length));
+		Player.y = yi;
+		var xi = (Player.x < 0 ? (World[0].length + Player.x) : (Player.x % World[0].length));
+		Player.x = xi;
+		walking.play();
 		Player.moved = true;
 	};
 }
@@ -167,7 +239,7 @@ function startGame()
 	localStorage.currentPlayerName = Player.name;
 	loadGame(Player.name);
 	bindEvents();
-	startDrawing();	
+	startDrawing();
 }
 
 function startMenu()

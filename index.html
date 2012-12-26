@@ -41,6 +41,7 @@
         </div>
         <div data-role="footer">
         	<h2>&copy; Luc Rosenbrand &amp; Christiaan Rakowski</h2>
+			<h3>Background music is &quot;Desecrated Temple&quot; by <a href="http://forums.rpgmakerweb.com/index.php?/topic/926-rpg-music-pack-free-commercial-use/" target="_BLANK" >Aaron Krogh</a><h3>
         </div>
     </div>
     
@@ -68,13 +69,26 @@
     <div id="dialog-settings" title="Settings">
         <p>Adding the modal overlay screen makes the dialog look more prominent because it dims out the page content.</p>
     </div>
+	
+	<div id="dialog-alert" title="Alert">
+        <p class="text"></p>
+    </div>
     
     <script defer="defer">
 		startMenu();
 	</script>
     
-    <audio id="kingSpeech" style="display: none;">
-    	<source src="http://www.audiomicro.com/tracks/listen/5a1c0a192aa643f" type="audio/mp3" />
+    <audio id="backgroundMusic" loop="loop" autoplay="autoplay" style="display: none;">
+    	<source src="Desecrated_Temple.mp3" type="audio/mp3" />
+    </audio>	
+	<audio id="walking" style="display: none;">
+    	<source src="walking.mp3" type="audio/mp3" />
+    </audio>
+	<audio id="pickFlower" style="display: none;">
+    	<source src="flowerPicking.mp3" type="audio/mp3" />
+    </audio>
+	<audio id="kingSpeech" style="display: none;">
+    	<source src="king-greeting.mp3" type="audio/mp3" />
     </audio>
 </body>
 </html>
