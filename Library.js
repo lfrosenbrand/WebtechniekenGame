@@ -3,7 +3,7 @@
 var Player = { "x":0, "y":0, "hp":100, "level":1, "xp":0, "ax":0, "ay":8, "w":32, "h":32, "name":"Jan", inventory:[], "moved":true };
 var Resolution = { "x":0, "y":0, "w":480, "h":320, "tw":32, "th":32 };
 
-var Quests = [ { "name":"Flowah Powah!", "type":"collect", "item_id":1, "count":4, "isStarted":false, "isCompleted":false, "description":"Ohnoez! We dun lost teh flowahs! Plx gief dem bak to da king!", "hint":"U dun haf enuf flowahs, plx get moar!", "complete":"ktnxbai" } ];
+var Quests = [ { "name":"Flowah Powah!", "type":"collect", "item_id":1, "count":4, "isStarted":false, "isCompleted":false, "description":"Ohnoez! We dun lost teh flowahs! Plx gief dem bak to da king!", "hint":"U dun haf enuf flowahs, plx get moar!", "complete":"ktnxbai", "xp":100 } ];
 
 var World = [ [0, 0, 0, 0, 2, 0, 0, 0, 0]
 			, [0, 0, 0, 1, 0, 0, 0, 0, 0]
@@ -49,7 +49,7 @@ function drawWorld(timestamp)
 					if(Player.moved)
 					{
 						var quest = Quests[0];
-						if(quest.isCompleted || (Player.inventory[quest.item_id] >= quest.count))
+						if(Player.inventory[quest.item_id] >= quest.count)
 						{
 							quest.isCompleted = true;
 							Player.inventory[quest.item_id] = null;
@@ -58,6 +58,8 @@ function drawWorld(timestamp)
 							$.colorbox({inline:true, href:"#dialog-alert"});
 							
 							kingSpeech.play();
+							
+							Player.xp += quest.xp;
 						}
 						else
 						{
@@ -66,7 +68,7 @@ function drawWorld(timestamp)
 								$('#dialog-alert .text').html(quest.hint);
 								$.colorbox({inline:true, href:"#dialog-alert"});
 							}
-							else
+							else if(!quest.isCompleted)
 							{
 								$('#dialog-alert .text').html(quest.description);
 								$.colorbox({inline:true, href:"#dialog-alert"});
@@ -106,7 +108,7 @@ function drawWorld(timestamp)
 function doLogic()
 {
 	//console.log('thinking');
-	if(Player.xp > 100)
+	if(Player.xp >= (Player.level * 100))
 	{
 		levelUp();
 	}
@@ -117,6 +119,8 @@ function levelUp()
 	Player.xp = Player.xp - 100;
 	Player.level++;
 	document.getElementById('player').src = 'player'+Player.level+'.png';
+	$('#dialog-alert .text').html("Level up! You are now level "+Player.level);
+	$.colorbox({inline:true, href:"#dialog-alert"});
 }
 
 function startDrawing()
@@ -130,10 +134,7 @@ function startDrawing()
 	console.log('starting AI');
 	window.setInterval(function() {
 		doLogic();
-		if(Player.moved)
-		{
-			requestAnimationFrame(drawWorld);
-		}
+		requestAnimationFrame(drawWorld);
 	}, 1000/30);
 }
 
@@ -186,39 +187,32 @@ function bindEvents()
 	
 	window.onmousedown=function(e){
 	
-		if(e.touches)
-		{
+		if(e.touches) {
 			e = e.touches[0];
-		}
-		console.log(e.y, (screen.availHeight * 0.2), (screen.availHeight * 0.8));
-		console.log(e.x, (screen.availWidth * 0.2), (screen.availWidth * 0.8));
-		if(e.y < (screen.availHeight * 0.2)) {
+		}		
+		if(e.y < (window.innerHeight * 0.2)) {
 			Player.y--;
 			Player.ay = 7;
 			Player.ax++;
 			Player.ax %= 4;
-			console.log("up");
 		}
-		else if(e.y > (screen.availHeight * 0.8)) {
+		else if(e.y > (window.innerHeight * 0.8)) {
 			Player.y++;
 			Player.ay = 10;
 			Player.ax++;
 			Player.ax %= 4;
-			console.log("down");
 		}
-		else if(e.x < (screen.availWidth * 0.2)) {
+		else if(e.x < (window.innerWidth * 0.2)) {
 			Player.x--;
 			Player.ay = 1;
 			Player.ax++;
 			Player.ax %= 4;
-			console.log("left");
 		}
-		else if(e.x > (screen.availWidth * 0.8)) {
+		else if(e.x > (window.innerWidth * 0.8)) {
 			Player.x++;
 			Player.ay = 4;
 			Player.ax++;
 			Player.ax %= 4;
-			console.log("right");
 		}
 		else {
 			return;
