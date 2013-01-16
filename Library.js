@@ -54,8 +54,9 @@ function drawWorld(timestamp)
 							quest.isCompleted = true;
 							Player.inventory[quest.item_id] = null;
 							
-							$('#dialog-alert .text').html(quest.complete);
-							$.colorbox({inline:true, href:"#dialog-alert"});
+							//$('#dialog-alert .text').html(quest.complete);
+							//$.colorbox({inline:true, href:"#dialog-alert"});
+							$.colorbox({html:"<span class=\".text\">" + quest.complete + "</span>"});
 							
 							kingSpeech.play();
 							
@@ -65,13 +66,15 @@ function drawWorld(timestamp)
 						{
 							if(quest.isStarted)
 							{
-								$('#dialog-alert .text').html(quest.hint);
-								$.colorbox({inline:true, href:"#dialog-alert"});
+								//$('#dialog-alert .text').html(quest.hint);
+								//$.colorbox({inline:true, href:"#dialog-alert"});
+								$.colorbox({html:"<span class=\".text\">" + quest.hint + "</span>"});
 							}
 							else if(!quest.isCompleted)
 							{
-								$('#dialog-alert .text').html(quest.description);
-								$.colorbox({inline:true, href:"#dialog-alert"});
+								//$('#dialog-alert .text').html(quest.description);
+								//$.colorbox({inline:true, href:"#dialog-alert"});
+								$.colorbox({html:"<span class=\".text\">" + quest.description + "</span>"});
 								quest.isStarted = true;
 							}
 						}
@@ -119,8 +122,10 @@ function levelUp()
 	Player.xp = Player.xp - 100;
 	Player.level++;
 	document.getElementById('player').src = 'player'+Player.level+'.png';
-	$('#dialog-alert .text').html("Level up! You are now level "+Player.level);
-	$.colorbox({inline:true, href:"#dialog-alert"});
+	//$('#dialog-alert .text').html("Level up! You are now level "+Player.level);
+	//$.colorbox({inline:true, href:"#dialog-alert"});
+	
+	$.colorbox({html:"<span class=\".text\">Level up! You are now level "+Player.level + "</span>"});
 }
 
 function startDrawing()
